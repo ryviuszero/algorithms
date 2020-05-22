@@ -9,8 +9,7 @@ public class Percolation {
     private final int size;
     private int count;
     private final boolean[][] grid;
-    private final WeightedQuickUnionUF uf1;
-    private final WeightedQuickUnionUF uf2;
+    private WeightedQuickUnionUF uf;
 
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int n) {
@@ -19,8 +18,7 @@ public class Percolation {
         size = n;
         count = 0;
         grid = new boolean[size][size];
-        uf1 = new WeightedQuickUnionUF(size * size + 2);
-        uf2 = new WeightedQuickUnionUF(size * size + 1);
+        uf = new WeightedQuickUnionUF(size * size + 2);
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
@@ -38,41 +36,27 @@ public class Percolation {
             int tmp = map(row, col);
 
             // for the first line
-            if (row == 1) {
-                uf1.union(0, tmp);
-                uf2.union(0, tmp);
-            }
-
+            if (row == 1)
+                uf.union(0, tmp);
 
             // for the last line
             if (row == size)
-                uf1.union(size * size + 1, tmp);
+                uf.union(tmp, size * size + 1);
             // up
-            if (row - 1 > 0 && grid[row - 2][col - 1]) {
-                uf1.union(tmp, map(row - 1, col));
-                uf2.union(tmp, map(row - 1, col));
-            }
-
+            if (row - 1 > 0 && grid[row - 2][col - 1])
+                uf.union(map(row - 1, col), tmp);
 
             // right
-            if (col + 1 <= size && grid[row - 1][col]) {
-                uf1.union(tmp, map(row, col + 1));
-                uf2.union(tmp, map(row, col + 1));
-            }
+            if (col + 1 <= size && grid[row - 1][col])
+                uf.union(map(row, col + 1), tmp);
 
             // bottom
-            if (row + 1 <= size && grid[row][col - 1]) {
-                uf1.union(tmp, map(row + 1, col));
-                uf2.union(tmp, map(row + 1, col));
-            }
-
+            if (row + 1 <= size && grid[row][col - 1])
+                uf.union(map(row + 1, col), tmp);
 
             // right
-            if (col - 1 > 0 && grid[row - 1][col - 2]) {
-                uf1.union(tmp, map(row, col - 1));
-                uf2.union(tmp, map(row, col - 1));
-            }
-
+            if (col - 1 > 0 && grid[row - 1][col - 2])
+                uf.union(map(row, col - 1), tmp);
 
             grid[row - 1][col - 1] = true;
             count++;
@@ -101,8 +85,7 @@ public class Percolation {
         if (row < 1 || row > size || col < 1 || col > size)
             throw new IllegalArgumentException("row and col must be in (1,n)!");
 
-        // return uf2.find(0) == uf2.find((row - 1) * size + col);
-        return uf2.connected(0, (row - 1) * size + col);
+        return uf.connected(0, (row - 1) * size + col);
     }
 
     // returns the number of open sites
@@ -112,8 +95,7 @@ public class Percolation {
 
     // does the system percolate?
     public boolean percolates() {
-        // return uf1.find(0) == uf1.find(size * size + 1);
-        return uf1.connected(0, size * size + 1);
+        return uf.connected(0, size * size + 1);
     }
 
     // test client (optional)

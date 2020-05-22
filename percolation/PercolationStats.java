@@ -6,53 +6,43 @@
 
 
 import edu.princeton.cs.algs4.StdRandom;
+import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
     private static final double CONFIDENCE_95 = 1.96;
     private final double mean;
-    private double stddev;
+    private final double stddev;
     private final double confidenceLo;
     private final double confidenceHi;
 
 
     // perform independent trials on an n-by-n grid
     public PercolationStats(int n, int trials) {
-        if (n <= 0 || trials <= 2)
-            throw new IllegalArgumentException("n must bigger than 0 / trials must >= 2!");
+        if (n <= 0 || trials <= 0)
+            throw new IllegalArgumentException(
+                    "n must bigger than 0 / trials must  bigger than 0!");
 
-        int num = trials;
         double[] res = new double[trials];
 
-        while (--num >= 0) {
+        for (int i = 0; i < trials; i++) {
             Percolation perc = new Percolation(n);
             while (!perc.percolates()) {
                 int row = StdRandom.uniform(1, n + 1);
                 int col = StdRandom.uniform(1, n + 1);
 
-                while (perc.isOpen(row, col)) {
-                    row = StdRandom.uniform(1, n + 1);
-                    col = StdRandom.uniform(1, n + 1);
+                if (perc.isOpen(row, col)) {
+                    continue;
                 }
                 perc.open(row, col);
             }
-            res[num] = perc.numberOfOpenSites() * 1.0 / (n * n);
+            res[i] = perc.numberOfOpenSites() * 1.0 / (n * n);
         }
 
         // mean
-        double sum = 0.0;
-        for (int i = 0; i < trials; i++) {
-            sum += res[i];
-        }
-
-        mean = sum / trials;
+        mean = StdStats.mean(res);
 
         // stddev
-        for (int i = 0; i < trials; i++) {
-            stddev += (res[i] - mean) * (res[i] - mean);
-        }
-
-        stddev /= (trials - 1);
-        stddev = Math.sqrt(stddev);
+        stddev = StdStats.stddev(res);
 
         // confidenceLo
         confidenceLo = mean - (CONFIDENCE_95 * stddev) / Math.sqrt(trials);
