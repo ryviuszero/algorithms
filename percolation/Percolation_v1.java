@@ -5,14 +5,14 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
  *  Coursera User ID:  mywindoes
  *  Last modified:     5/15/2020
  **************************************************************************** */
-public class Percolation {
+public class Percolation_v1 {
     private final int size;
     private int count;
     private final boolean[][] grid;
     private WeightedQuickUnionUF uf;
 
     // creates n-by-n grid, with all sites initially blocked
-    public Percolation(int n) {
+    public Percolation_v1(int n) {
         if (n <= 0)
             throw new IllegalArgumentException("n must bigger than zero!");
         size = n;
