@@ -174,7 +174,7 @@ public class Deque<Item> implements Iterable<Item> {
         }
 
         public boolean hasNext() {
-            return current != null;
+            return current != null && current.value != null;
         }
 
         public void remove() {
@@ -187,54 +187,19 @@ public class Deque<Item> implements Iterable<Item> {
 
     // unit testing (required)
     public static void main(String[] args) {
-        Deque<Integer> deck = new Deque<Integer>();
-
-        System.out.println("IS EMPTY: " + deck.isEmpty());
-
-        for (int i = 0; i < 10; i++) {
-            deck.addFirst(i);
-            System.out.println("SIZE: " + deck.size());
-            System.out.println("IS EMPTY: " + deck.isEmpty());
+        Deque<Integer> deque = new Deque<Integer>();
+        deque.addLast(1);
+        deque.addFirst(2);
+        deque.addLast(3);
+        deque.addLast(4);
+        deque.addLast(5);
+        for (int it : deque) {
+            System.out.println(it);
         }
-
-        System.out.println("Elements 0-9 added. We should have seen 1 to 10 printed");
-
-        for (Integer i : deck) {
-            System.out.println(i);
-        }
-
-        System.out.println(
-                "Finished iterating over the iterator. Elements should appear from 9 to 0.");
-
-        for (int i = 0; i < 10; i++) {
-            System.out.println(deck.removeLast());
-            System.out.println("IS EMPTY: " + deck.isEmpty());
-            System.out.println("Deck size: " + deck.size());
-        }
-
-        System.out.println("Elements 0-9 removed. They should appear from 0 to 9.");
-
-        for (int i = 0; i < 10; i++) {
-            deck.addLast(i);
-            System.out.println("IS EMPTY: " + deck.isEmpty());
-            System.out.println("Deck size: " + deck.size());
-        }
-
-        System.out.println("Elements 0-9 added.");
-
-        for (Integer i : deck) {
-            System.out.println(i);
-        }
-
-        System.out.println(
-                "Finished iterating over the iterator. Elements should appear from 0 to 9");
-
-        for (int i = 0; i < 10; i++) {
-            System.out.println(deck.removeFirst());
-            System.out.println("IS EMPTY: " + deck.isEmpty());
-            System.out.println("Deck size: " + deck.size());
-        }
-
-        System.out.println("Elements 0-9 removed. Elements should appear from 0 to 9");
+        System.out.println(deque.removeFirst()); //==> 2
+        System.out.println(deque.removeFirst()); // ==> 1
+        System.out.println(deque.removeLast()); // ==> 5
+        System.out.println(deque.removeFirst()); // ==> 3
+        System.out.println(deque.removeLast()); // ==> 4
     }
 }
